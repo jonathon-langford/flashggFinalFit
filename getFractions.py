@@ -13,7 +13,7 @@ from collections import OrderedDict as od
 
 r.gROOT.SetBatch(True)
 
-baseFilePath  = '/vols/cms/jl2117/hgg/ws/test_stage1_1_2018/'
+baseFilePath  = '/vols/cms/jl2117/hgg/ws/Jan19/stage1_1_2018/'
 fileNames     = []
 for root,dirs,files in walk(baseFilePath):
   for fileName in files: 
@@ -32,7 +32,7 @@ for fileName in fileNames:
   if 'M125' not in fileName: continue
   procs[ fileName.split('pythia8_')[1].split('.root')[0] ] = 0.
   procsNoTag[ fileName.split('pythia8_')[1].split('.root')[0] ] = 0.
-cats = 'RECO_0J_PTH_GT10_Tag0,RECO_0J_PTH_GT10_Tag1,RECO_0J_PTH_0_10_Tag0,RECO_0J_PTH_0_10_Tag1,RECO_PTH_GT200_Tag0,RECO_PTH_GT200_Tag1,RECO_1J_PTH_120_200_Tag0,RECO_1J_PTH_120_200_Tag1,RECO_1J_PTH_60_120_Tag0,RECO_1J_PTH_60_120_Tag1,RECO_1J_PTH_0_60_Tag0,RECO_1J_PTH_0_60_Tag1,RECO_VBFTOPO_BSM,RECO_VBFTOPO_JET3VETO_Tag0,RECO_VBFTOPO_JET3VETO_Tag1,RECO_VBFTOPO_JET3_Tag0,RECO_VBFTOPO_JET3_Tag1,RECO_VBFTOPO_VHHAD,RECO_GE2J_PTH_120_200_Tag0,RECO_GE2J_PTH_120_200_Tag1,RECO_GE2J_PTH_60_120_Tag0,RECO_GE2J_PTH_60_120_Tag1,RECO_GE2J_PTH_0_60_Tag0,RECO_GE2J_PTH_0_60_Tag1'
+cats = 'RECO_0J_PTH_0_10_Tag0,RECO_VBFTOPO_JET3VETO_LOWMJJ,RECO_0J_PTH_0_10_Tag1,RECO_GE2J_PTH_0_60_Tag1,RECO_1J_PTH_0_60_Tag0,RECO_0J_PTH_GT10_Tag0,RECO_VBFTOPO_JET3VETO_HIGHMJJ,RECO_GE2J_PTH_60_120_Tag1,RECO_VBFTOPO_BSM,RECO_GE2J_PTH_120_200_Tag1,RECO_1J_PTH_0_60_Tag1,RECO_GE2J_PTH_60_120_Tag0,RECO_1J_PTH_60_120_Tag1,RECO_GE2J_PTH_0_60_Tag0,RECO_VBFTOPO_JET3_HIGHMJJ,RECO_1J_PTH_60_120_Tag0,RECO_GE2J_PTH_120_200_Tag0,RECO_1J_PTH_120_200_Tag1,RECO_1J_PTH_120_200_Tag0,RECO_PTH_GT200_Tag0,RECO_PTH_GT200_Tag1,RECO_VBFTOPO_VHHAD,RECO_VBFLIKEGGH,RECO_0J_PTH_GT10_Tag1,RECO_VBFTOPO_JET3_LOWMJJ'
 # Stage 1 tags
 #cats  = 'RECO_0J_Tag0,RECO_0J_Tag1,RECO_0J_Tag2,'
 #cats += 'RECO_1J_PTH_0_60_Tag0,RECO_1J_PTH_0_60_Tag1,RECO_1J_PTH_60_120_Tag0,RECO_1J_PTH_60_120_Tag1,RECO_1J_PTH_120_200_Tag0,RECO_1J_PTH_120_200_Tag1,RECO_1J_PTH_GT200,'
@@ -62,10 +62,12 @@ print " --> [DEBUG] CATS: ", cats
 nameMap  = {}
 nameMap['GG2H']    = 'ggh'
 nameMap['VBF']     = 'vbf'
-nameMap['WH2HQQ']  = 'wh'
+#nameMap['WH2HQQ']  = 'wh'
+nameMap['WH2HQQ']  = 'zh' #FIXME
 nameMap['ZH2HQQ']  = 'zh'
 nameMap['QQ2HLL']  = 'zh'
-nameMap['QQ2HLNU'] = 'wh'
+#nameMap['QQ2HLNU'] = 'wh'
+nameMap['QQ2HLNU'] = 'zh' #FIXME
 nameMap['TTH'] = 'tth'
 
 def main():
@@ -94,6 +96,9 @@ def main():
 
   print '\n\n\nStage 1.1 fractions:'
   for proc,val in procs.iteritems():
+    if "QQ2HLNU" in proc: 
+      print "SKIPPING process %s\n"%proc
+      continue
     procTot = stage0procs[ proc.split('_')[0] ]+stage0noTag[proc.split('_')[0]]
     theFrac = (val+procsNoTag[proc]) / procTot
     effAcc  = val / (val + procsNoTag[proc]) 
